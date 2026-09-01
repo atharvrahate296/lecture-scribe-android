@@ -1,5 +1,5 @@
 /* ============================================================
-   SHRUTI — Session Readiness Check  (spec §8)
+   Verbatim — Session Readiness Check  (spec §8)
    ------------------------------------------------------------
    An executable pre-flight, run before a session may start and
    again periodically during long ones. BLOCKED prevents start.
@@ -237,4 +237,4 @@
       return report;
     }
   };
-})(window.SHRUTI = window.SHRUTI || {});
+})(window.Verbatim = window.Verbatim || {});

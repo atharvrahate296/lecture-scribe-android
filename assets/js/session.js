@@ -1,5 +1,5 @@
 /* ============================================================
-   SHRUTI — session controller  (spec §10)
+   Verbatim — session controller  (spec §10)
    ------------------------------------------------------------
    A deterministic state machine, not a free-form agent. It may
    only move between the enumerated phases, and every transition
@@ -452,4 +452,4 @@
       };
     }
   };
-})(window.SHRUTI = window.SHRUTI || {});
+})(window.Verbatim = window.Verbatim || {});

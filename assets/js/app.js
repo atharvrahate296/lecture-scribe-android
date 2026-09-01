@@ -1,5 +1,5 @@
 /* ============================================================
-   SHRUTI — wiring
+   Verbatim — wiring
    ============================================================ */
 (function (S) {
   'use strict';
@@ -653,4 +653,4 @@
 
   boot();
   telemetry();
-})(window.SHRUTI = window.SHRUTI || {});
+})(window.Verbatim = window.Verbatim || {});

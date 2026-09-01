@@ -1,5 +1,5 @@
 /* ============================================================
-   SHRUTI — pipeline
+   Verbatim — pipeline
    ------------------------------------------------------------
    Transcript assembly (§9), the grounding filter (§11), and the
    evaluation/ablation bench data (§12, §14).
@@ -305,4 +305,4 @@
       };
     }
   };
-})(window.SHRUTI = window.SHRUTI || {});
+})(window.Verbatim = window.Verbatim || {});

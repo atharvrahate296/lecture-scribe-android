@@ -1,5 +1,5 @@
 /* ============================================================
-   SHRUTI — render layer
+   Verbatim — render layer
    ============================================================ */
 (function (S) {
   'use strict';
@@ -581,4 +581,4 @@
       .replace(/:\s&quot;(.*?)&quot;/g, ': <span class="s">&quot;$1&quot;</span>')
       .replace(/:\s(-?\d+\.?\d*|true|false|null)/g, ': <span class="n">$1</span>');
   };
-})(window.SHRUTI = window.SHRUTI || {});
+})(window.Verbatim = window.Verbatim || {});

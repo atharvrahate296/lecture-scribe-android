@@ -1,5 +1,5 @@
 /* ============================================================
-   SHRUTI — audio capture layer
+   Verbatim — audio capture layer
    ------------------------------------------------------------
    Real work happens here. The microphone path, the RMS/VAD gate,
    the bounded ring buffer and the audio-file header inspection
@@ -254,4 +254,4 @@
       g.fillRect(W - dpr, 0, dpr, H);
     }
   };
-})(window.SHRUTI = window.SHRUTI || {});
+})(window.Verbatim = window.Verbatim || {});

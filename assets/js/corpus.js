@@ -1,5 +1,5 @@
 /* ============================================================
-   SHRUTI — demo corpus
+   Verbatim — demo corpus
    ------------------------------------------------------------
    A realistic recitation excerpt: Indian-classroom acoustics,
    English/Hindi code-switching, student cross-talk, a stretch
@@ -183,4 +183,4 @@
     pointCandidates: POINT_CANDIDATES,
     termCandidates: TERM_CANDIDATES
   };
-})(window.SHRUTI = window.SHRUTI || {});
+})(window.Verbatim = window.Verbatim || {});

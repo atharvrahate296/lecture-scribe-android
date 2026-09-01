@@ -1,5 +1,5 @@
 /* ============================================================
-   Shruti — bundler
+   Verbatim — bundler
    ------------------------------------------------------------
    Inlines every stylesheet and script into one file so the
    prototype can be opened from a USB stick with no server, no
@@ -9,7 +9,7 @@
      node build.mjs
 
    Writes:
-     dist/shruti.html    complete standalone page (double-click)
+     dist/Verbatim.html    complete standalone page (double-click)
      dist/artifact.html  body-only fragment for hosted publishing
    ============================================================ */
 
@@ -52,7 +52,7 @@ jsFiles.forEach((f, i) => {
 out = out.replace(/\n{3,}/g, '\n\n');
 
 mkdirSync(join(root, 'dist'), { recursive: true });
-writeFileSync(join(root, 'dist/shruti.html'), out, 'utf8');
+writeFileSync(join(root, 'dist/Verbatim.html'), out, 'utf8');
 
 // Body-only fragment: the host supplies doctype, html, head and body.
 const bodyOnly = out
@@ -60,10 +60,10 @@ const bodyOnly = out
   .replace(/<\/body>[\s\S]*$/i, '')
   .replace(/^\s*\n/, '');
 const head =
-  `<title>Shruti — Offline Lecture Transcriber</title>\n` +
+  `<title>Verbatim — Offline Lecture Transcriber</title>\n` +
   `<style>\n${css}\n</style>\n`;
 writeFileSync(join(root, 'dist/artifact.html'), head + bodyOnly, 'utf8');
 
 const kb = (s) => (Buffer.byteLength(s) / 1024).toFixed(1) + ' KB';
-console.log(`dist/shruti.html    ${kb(out)}   (${cssFiles.length} css + ${jsFiles.length} js inlined)`);
+console.log(`dist/Verbatim.html    ${kb(out)}   (${cssFiles.length} css + ${jsFiles.length} js inlined)`);
 console.log(`dist/artifact.html  ${kb(head + bodyOnly)}`);

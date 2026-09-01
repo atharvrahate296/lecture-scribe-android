@@ -1,5 +1,5 @@
 /* ============================================================
-   SHRUTI — core: utilities, network guard, persistent store
+   Verbatim — core: utilities, network guard, persistent store
    ============================================================ */
 (function (S) {
   'use strict';
@@ -64,7 +64,7 @@
         emit: function (k, payload) {
           (map[k] || []).forEach(function (fn) {
             try { fn(payload); }
-            catch (e) { if (window.console) { console.error('[shruti] ' + k + ' subscriber failed:', e); } }
+            catch (e) { if (window.console) { console.error('[Verbatim] ' + k + ' subscriber failed:', e); } }
           });
         }
       };
@@ -113,7 +113,7 @@
 
       var deny = function (kind, target) {
         NetGuard.log(kind, target);
-        var e = new Error('SHRUTI offline seal: ' + kind + ' to "' + target + '" refused. This build has no network path.');
+        var e = new Error('Verbatim offline seal: ' + kind + ' to "' + target + '" refused. This build has no network path.');
         e.name = 'OfflineSealViolation';
         return e;
       };
@@ -176,8 +176,8 @@
      so a force-kill loses at most the chunk in flight.
      ============================================================ */
 
-  var KEY = 'shruti.session.v1';
-  var JKEY = 'shruti.journal.v1';
+  var KEY = 'Verbatim.session.v1';
+  var JKEY = 'Verbatim.journal.v1';
 
   var Store = S.store = {
     available: (function () {
@@ -281,4 +281,4 @@
       'stroke-linejoin="round" aria-hidden="true"' + (cls ? ' class="' + cls + '"' : '') + '>' +
       (P[name] || '') + '</svg>';
   };
-})(window.SHRUTI = window.SHRUTI || {});
+})(window.Verbatim = window.Verbatim || {});

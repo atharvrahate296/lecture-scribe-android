@@ -1,8 +1,8 @@
-<title>Shruti — Offline Lecture Transcriber</title>
+<title>Verbatim — Offline Lecture Transcriber</title>
 <style>
 /* ===== assets/styles/tokens.css ===== */
 /* ============================================================
-   SHRUTI — design tokens
+   Verbatim — design tokens
    Warm monochrome, editorial. Colour is a scarce resource:
    it appears only where it carries meaning.
    ============================================================ */
@@ -106,7 +106,7 @@
 
 /* ===== assets/styles/app.css ===== */
 /* ============================================================
-   SHRUTI — shell + primitives
+   Verbatim — shell + primitives
    ============================================================ */
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -495,7 +495,7 @@ kbd {
 
 /* ===== assets/styles/views.css ===== */
 /* ============================================================
-   SHRUTI — view compositions
+   Verbatim — view compositions
    ============================================================ */
 
 /* ------------------------------------------------------------
@@ -1072,7 +1072,7 @@ kbd {
       <path d="M15.5 3H17a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-1.5"/>
       <path d="M8.5 9v4"/><path d="M11 6.5v9"/><path d="M13.5 9v4"/>
     </svg>
-    <span class="brand-word">Shruti</span>
+    <span class="brand-word">Verbatim</span>
   </div>
 
   <!-- ============ telemetry ============ -->
@@ -1570,7 +1570,7 @@ kbd {
 <script>
 /* ===== assets/js/core.js ===== */
 /* ============================================================
-   SHRUTI — core: utilities, network guard, persistent store
+   Verbatim — core: utilities, network guard, persistent store
    ============================================================ */
 (function (S) {
   'use strict';
@@ -1635,7 +1635,7 @@ kbd {
         emit: function (k, payload) {
           (map[k] || []).forEach(function (fn) {
             try { fn(payload); }
-            catch (e) { if (window.console) { console.error('[shruti] ' + k + ' subscriber failed:', e); } }
+            catch (e) { if (window.console) { console.error('[Verbatim] ' + k + ' subscriber failed:', e); } }
           });
         }
       };
@@ -1684,7 +1684,7 @@ kbd {
 
       var deny = function (kind, target) {
         NetGuard.log(kind, target);
-        var e = new Error('SHRUTI offline seal: ' + kind + ' to "' + target + '" refused. This build has no network path.');
+        var e = new Error('Verbatim offline seal: ' + kind + ' to "' + target + '" refused. This build has no network path.');
         e.name = 'OfflineSealViolation';
         return e;
       };
@@ -1747,8 +1747,8 @@ kbd {
      so a force-kill loses at most the chunk in flight.
      ============================================================ */
 
-  var KEY = 'shruti.session.v1';
-  var JKEY = 'shruti.journal.v1';
+  var KEY = 'Verbatim.session.v1';
+  var JKEY = 'Verbatim.journal.v1';
 
   var Store = S.store = {
     available: (function () {
@@ -1852,11 +1852,11 @@ kbd {
       'stroke-linejoin="round" aria-hidden="true"' + (cls ? ' class="' + cls + '"' : '') + '>' +
       (P[name] || '') + '</svg>';
   };
-})(window.SHRUTI = window.SHRUTI || {});
+})(window.Verbatim = window.Verbatim || {});
 
 /* ===== assets/js/corpus.js ===== */
 /* ============================================================
-   SHRUTI — demo corpus
+   Verbatim — demo corpus
    ------------------------------------------------------------
    A realistic recitation excerpt: Indian-classroom acoustics,
    English/Hindi code-switching, student cross-talk, a stretch
@@ -2040,11 +2040,11 @@ kbd {
     pointCandidates: POINT_CANDIDATES,
     termCandidates: TERM_CANDIDATES
   };
-})(window.SHRUTI = window.SHRUTI || {});
+})(window.Verbatim = window.Verbatim || {});
 
 /* ===== assets/js/pipeline.js ===== */
 /* ============================================================
-   SHRUTI — pipeline
+   Verbatim — pipeline
    ------------------------------------------------------------
    Transcript assembly (§9), the grounding filter (§11), and the
    evaluation/ablation bench data (§12, §14).
@@ -2350,11 +2350,11 @@ kbd {
       };
     }
   };
-})(window.SHRUTI = window.SHRUTI || {});
+})(window.Verbatim = window.Verbatim || {});
 
 /* ===== assets/js/audio.js ===== */
 /* ============================================================
-   SHRUTI — audio capture layer
+   Verbatim — audio capture layer
    ------------------------------------------------------------
    Real work happens here. The microphone path, the RMS/VAD gate,
    the bounded ring buffer and the audio-file header inspection
@@ -2609,11 +2609,11 @@ kbd {
       g.fillRect(W - dpr, 0, dpr, H);
     }
   };
-})(window.SHRUTI = window.SHRUTI || {});
+})(window.Verbatim = window.Verbatim || {});
 
 /* ===== assets/js/preflight.js ===== */
 /* ============================================================
-   SHRUTI — Session Readiness Check  (spec §8)
+   Verbatim — Session Readiness Check  (spec §8)
    ------------------------------------------------------------
    An executable pre-flight, run before a session may start and
    again periodically during long ones. BLOCKED prevents start.
@@ -2851,11 +2851,11 @@ kbd {
       return report;
     }
   };
-})(window.SHRUTI = window.SHRUTI || {});
+})(window.Verbatim = window.Verbatim || {});
 
 /* ===== assets/js/session.js ===== */
 /* ============================================================
-   SHRUTI — session controller  (spec §10)
+   Verbatim — session controller  (spec §10)
    ------------------------------------------------------------
    A deterministic state machine, not a free-form agent. It may
    only move between the enumerated phases, and every transition
@@ -3308,11 +3308,11 @@ kbd {
       };
     }
   };
-})(window.SHRUTI = window.SHRUTI || {});
+})(window.Verbatim = window.Verbatim || {});
 
 /* ===== assets/js/views.js ===== */
 /* ============================================================
-   SHRUTI — render layer
+   Verbatim — render layer
    ============================================================ */
 (function (S) {
   'use strict';
@@ -3894,11 +3894,11 @@ kbd {
       .replace(/:\s&quot;(.*?)&quot;/g, ': <span class="s">&quot;$1&quot;</span>')
       .replace(/:\s(-?\d+\.?\d*|true|false|null)/g, ': <span class="n">$1</span>');
   };
-})(window.SHRUTI = window.SHRUTI || {});
+})(window.Verbatim = window.Verbatim || {});
 
 /* ===== assets/js/app.js ===== */
 /* ============================================================
-   SHRUTI — wiring
+   Verbatim — wiring
    ============================================================ */
 (function (S) {
   'use strict';
@@ -4552,7 +4552,7 @@ kbd {
 
   boot();
   telemetry();
-})(window.SHRUTI = window.SHRUTI || {});
+})(window.Verbatim = window.Verbatim || {});
 
 </script>
 
