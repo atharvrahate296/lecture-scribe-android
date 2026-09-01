@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shruti — Offline Lecture Transcriber</title>
+<meta name="description" content="On-device lecture transcription, summarisation and glossary extraction. Nothing leaves the phone.">
+<link rel="stylesheet" href="assets/styles/tokens.css">
+<link rel="stylesheet" href="assets/styles/app.css">
+<link rel="stylesheet" href="assets/styles/views.css">
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ============ brand ============ -->
+  <div class="brand">
+    <svg width="20" height="20" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+      <path d="M6.5 3H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h1.5"/>
+      <path d="M15.5 3H17a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-1.5"/>
+      <path d="M8.5 9v4"/><path d="M11 6.5v9"/><path d="M13.5 9v4"/>
+    </svg>
+    <span class="brand-word">Shruti</span>
+  </div>
+
+  <!-- ============ telemetry ============ -->
+  <div class="status" role="status" aria-live="polite">
+    <div class="seal" id="seal" title="No code path in this build can reach the network.">
+      <span class="seal-dot"></span>
+      <span class="seal-txt" id="seal-txt">Offline sealed</span>
+    </div>
+    <div class="tel"><span class="tel-k">Device</span><span class="tel-v" id="tel-device">iQOO 15</span></div>
+    <div class="tel"><span class="tel-k">NPU</span><span class="tel-v is-ok" id="tel-npu">QNN HTP</span></div>
+    <div class="tel"><span class="tel-k">RAM</span><span class="tel-v" id="tel-ram">— MB</span></div>
+    <div class="tel"><span class="tel-k">Battery</span><span class="tel-v" id="tel-batt">—</span></div>
+    <div class="tel grow"><span class="tel-k">Phase</span><span class="tel-v" id="tel-phase">IDLE</span></div>
+    <div class="tel-actions">
+      <button class="btn btn-sm" id="btn-sample" type="button">Load sample session</button>
+      <button class="btn btn-sm btn-primary" id="btn-demo" type="button">Play demo</button>
+    </div>
+  </div>
+
+  <!-- ============ rail ============ -->
+  <nav class="rail" aria-label="Sections">
+    <button class="rail-btn is-active" data-view="preflight" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      <span>Preflight</span>
+    </button>
+    <button class="rail-btn" data-view="capture" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg>
+      <span>Capture</span>
+    </button>
+    <button class="rail-btn is-locked" data-view="study" type="button" aria-disabled="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span>Study</span>
+    </button>
+    <button class="rail-btn" data-view="evidence" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v7L4 20a1 1 0 0 0 .9 1.5h14.2A1 1 0 0 0 20 20l-5-11V2"/><path d="M8 2h8"/><path d="M6.5 15h11"/></svg>
+      <span>Evidence</span>
+    </button>
+    <button class="rail-btn is-locked" data-view="trace" type="button" aria-disabled="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-2 2"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l2-2"/></svg>
+      <span>Trace</span>
+    </button>
+    <div class="rail-spacer"></div>
+  </nav>
+
+  <!-- ============ main ============ -->
+  <main class="main">
+
+    <!-- ================= PREFLIGHT ================= -->
+    <section class="view is-active" id="v-preflight" tabindex="-1">
+      <div class="wrap">
+
+        <div class="view-head">
+          <div>
+            <span class="kicker">Session readiness check · spec §8</span>
+            <h1>Nothing starts until the<br>device can be trusted to finish.</h1>
+            <p class="lede" style="margin-top:14px">
+              Every check below runs before capture is allowed. <b>Blocked</b> refuses to start.
+              <b>Degraded</b> starts anyway, with the reason kept on the record — because losing the
+              raw recording is worse than any other failure this system can have.
+            </p>
+          </div>
+          <button class="btn btn-primary" id="btn-preflight" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
+            Run readiness check
+          </button>
+        </div>
+
+        <div class="preflight-grid">
+
+          <div class="stack" style="gap:var(--s4)">
+            <div class="verdict reveal" id="verdict" data-status="">
+              <span class="kicker">Overall status</span>
+              <div class="verdict-word" id="verdict-word">NOT RUN</div>
+              <p class="verdict-note" id="verdict-note">
+                Run the check to see whether this device can hold a 90-minute session without
+                losing audio.
+              </p>
+              <ul class="degraded-list" id="degraded-list"></ul>
+            </div>
+
+            <div class="panel reveal">
+              <div class="panel-head">
+                <span class="kicker">Checks</span>
+                <span class="kicker" id="check-count">0 / 9</span>
+              </div>
+              <div class="checks" id="checks"></div>
+            </div>
+          </div>
+
+          <div class="stack" style="gap:var(--s4)">
+
+            <div class="device reveal">
+              <div class="device-top">
+                <div class="device-chip">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="1"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></svg>
+                </div>
+                <div>
+                  <div style="font-weight:600">iQOO 15</div>
+                  <div class="kicker" style="letter-spacing:.08em">Reference device</div>
+                </div>
+              </div>
+              <dl class="kv">
+                <dt>SoC</dt><dd>Snapdragon 8 Elite Gen 5</dd>
+                <dt>ASR</dt><dd>whisper-tiny.en INT8</dd>
+                <dt>Delegate</dt><dd>QNN HTP</dd>
+                <dt>LLM</dt><dd>Qwen2.5-1.5B Q4_K_M</dd>
+                <dt>Resident</dt><dd>1.03 GB</dd>
+                <dt>Real-time factor</dt><dd>0.11×</dd>
+              </dl>
+              <p class="faint" style="font-size:var(--t-xs);line-height:1.5">
+                Both models ship inside the APK. There is no first-run download, so a phone that
+                has never seen a network still works from cold boot.
+              </p>
+            </div>
+
+            <div>
+              <span class="kicker" style="display:block;margin-bottom:10px">Audio source</span>
+              <div class="sources">
+                <button class="source is-picked" data-source="mic" type="button">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg>
+                  <b>Live microphone</b>
+                  <small>Real capture. The transcript only advances while the VAD gate detects speech.</small>
+                </button>
+                <button class="source" data-source="file" type="button">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+                  <b>Audio file</b>
+                  <small>Header is read from the stream, never assumed. Truncated files are refused.</small>
+                </button>
+              </div>
+              <input type="file" id="file-input" accept="audio/*" class="sr">
+              <div id="file-report" style="margin-top:var(--s3)"></div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head"><span class="kicker">Today's session</span></div>
+              <div class="panel-body stack" style="gap:9px">
+                <div style="font-weight:600;line-height:1.4" id="lec-title">Lecture 14 — Virtual Memory</div>
+                <div class="faint" style="font-size:var(--t-sm)" id="lec-meta">CS3006 · Operating Systems</div>
+                <div class="faint" style="font-size:var(--t-xs);font-family:var(--face-data)" id="lec-room">Block B, Hall 204</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CAPTURE ================= -->
+    <section class="view" id="v-capture" tabindex="-1">
+      <div class="wrap wrap-wide">
+
+        <div class="view-head">
+          <div>
+            <span class="kicker">Capture · audio never leaves the ring buffer</span>
+            <h2 id="cap-title">Recording</h2>
+            <p class="explain">Audio is captured in 30-second chunks. Each one is checked for
+            speech, transcribed, then written to disk before the next begins — so a crash costs
+            one chunk, never the lecture.</p>
+          </div>
+          <div class="row">
+            <label class="kicker" for="speed" style="letter-spacing:.1em">Capture rate</label>
+            <select id="speed" class="btn btn-sm" style="padding:6px 9px">
+              <option value="1">Real time 1×</option>
+              <option value="12" selected>Demo 12×</option>
+              <option value="40">Fast 40×</option>
+              <option value="110">Sprint 110×</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="capture-grid">
+
+          <div class="stack" style="gap:var(--s4)">
+
+            <div class="scope reveal">
+              <div class="scope-overlay">
+                <span class="scope-tag">Input · 16 kHz mono · <span id="scope-src">mic</span></span>
+                <span class="scope-tag" id="scope-dbfs">−∞ dBFS</span>
+              </div>
+              <canvas id="scope" aria-label="Live input level"></canvas>
+              <div class="scope-foot">
+                <div class="gate" id="gate">
+                  <span class="gate-lamp"></span>
+                  <span class="gate-txt">VAD gate closed</span>
+                </div>
+                <span class="scope-tag" id="scope-note">Silence never reaches the transcriber</span>
+              </div>
+            </div>
+
+            <div class="transport reveal">
+              <span class="rec-dot" id="rec-dot" style="visibility:hidden"></span>
+              <div class="clock"><span id="clock">00:00:00</span> <small id="clock-of">/ 00:00:00</small></div>
+              <div style="flex:1"></div>
+              <button class="btn btn-primary" id="btn-start" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg>
+                Start capture
+              </button>
+              <button class="btn" id="btn-pause" type="button" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5v14M16 5v14"/></svg>
+                Pause
+              </button>
+              <button class="btn" id="btn-stop" type="button" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+                Stop &amp; process
+              </button>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head">
+                <span class="kicker">Audio chunks · 30-second windows, 3-second overlap</span>
+                <div class="row" style="gap:14px">
+                  <span class="tier"><i style="background:var(--line-3)"></i>Recorded</span>
+                  <span class="tier"><i style="background:var(--cite)"></i>Speech found</span>
+                  <span class="tier"><i style="background:var(--live)"></i>Transcribing</span>
+                  <span class="tier t1"><i></i>Saved to disk</span>
+                </div>
+              </div>
+              <div class="ledger" id="ledger"></div>
+              <div class="panel-body" style="border-top:1px solid var(--hairline);padding-top:12px">
+                <dl class="kv">
+                  <dt>Chunks recorded</dt><dd id="m-captured">0</dd>
+                  <dt>Audio held in memory</dt><dd id="m-ring">0 MB <span class="faint">/ 11.5 MB ceiling</span></dd>
+                  <dt>Memory freed again</dt><dd id="m-released">0</dd>
+                  <dt>Saves to disk</dt><dd id="m-writes">0</dd>
+                  <dt>Skipped as silence</dt><dd id="m-silent">0</dd>
+                </dl>
+                <div class="meter ember" style="margin-top:12px"><i id="m-ringbar"></i></div>
+                <p class="faint" style="font-size:var(--t-xs);margin-top:9px;line-height:1.5">
+                  Raw PCM is released as soon as a chunk is decoded, so a 90-minute lecture holds the
+                  same memory as a 5-minute one.
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <div class="spread" style="margin-bottom:9px">
+                <span class="kicker">Live captions · text appears as it is decoded</span>
+                <span class="tier t1"><i></i>Verbatim, never cleaned up</span>
+              </div>
+              <div class="captions" id="captions">
+                <span class="faint">Waiting for capture to start.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- right: what the student sees -->
+          <div class="stack" style="gap:var(--s4)">
+            <div class="spread">
+              <span class="kicker">On-device view</span>
+              <span class="pill flat" style="text-transform:none">iQOO 15</span>
+            </div>
+
+            <div class="phone reveal">
+              <div class="phone-screen">
+                <div class="phone-bar">
+                  <span id="p-time">09:41</span>
+                  <span>✈︎ &nbsp;&nbsp;<span id="p-batt">78%</span></span>
+                </div>
+                <div class="phone-body">
+                  <div>
+                    <div style="font-size:12px;font-weight:600" id="p-title">Lecture 14 — Virtual Memory</div>
+                    <div style="font-family:var(--face-data);font-size:9.5px;color:var(--ink-faint);letter-spacing:.08em;margin-top:2px">
+                      <span id="p-clock">00:00</span> · <span id="p-state">READY</span>
+                    </div>
+                  </div>
+                  <div class="phone-live" id="p-live"></div>
+                </div>
+                <div class="phone-foot">
+                  <div class="phone-rec" id="p-rec"><i></i></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head"><span class="kicker">Interruption drill</span></div>
+              <div class="panel-body stack" style="gap:10px">
+                <p class="faint" style="font-size:var(--t-xs);line-height:1.5">
+                  A lecture is interrupted by calls, backgrounding and flat batteries. Fire one and
+                  watch what survives.
+                </p>
+                <button class="btn btn-sm" id="btn-call" type="button" disabled>Incoming call</button>
+                <button class="btn btn-sm" id="btn-lowbat" type="button" disabled>Battery drops to 9%</button>
+                <button class="btn btn-sm btn-danger" id="btn-kill" type="button" disabled>Force-kill the app</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STUDY ================= -->
+    <section class="view" id="v-study" tabindex="-1">
+      <div class="study" id="study">
+        <svg class="provenance" id="provenance" aria-hidden="true"></svg>
+
+        <!-- verbatim -->
+        <div class="study-col">
+          <div class="col-head">
+            <div>
+              <div class="col-title">Exactly what was said</div>
+              <div class="col-sub"><span class="tier t1"><i></i>Verbatim</span>
+                <span id="t-count">—</span></div>
+            </div>
+            <div class="search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              <input type="search" id="t-search" placeholder="Search transcript" aria-label="Search transcript">
+            </div>
+          </div>
+          <div class="col-scroll" id="t-scroll">
+            <div class="transcript" id="transcript"></div>
+          </div>
+        </div>
+
+        <!-- derived -->
+        <div class="study-col">
+          <div class="col-head">
+            <div>
+              <div class="col-title">What the model made from it</div>
+              <div class="col-sub"><span class="tier t2"><i></i>Derived</span>
+                <span>Click any card to see the words behind it</span></div>
+            </div>
+            <button class="btn btn-sm btn-ghost" id="btn-clear-prov" type="button">Clear links</button>
+          </div>
+          <div class="derived-nav">
+            <button class="dtab is-active" data-pane="summary" type="button">Summary<b id="n-points">0</b></button>
+            <button class="dtab" data-pane="glossary" type="button">Glossary<b id="n-terms">0</b></button>
+            <button class="dtab" data-pane="dropped" type="button">Rejected<b id="n-dropped">0</b></button>
+            <button class="dtab" data-pane="confidence" type="button">Confidence<b id="n-low">0</b></button>
+          </div>
+          <div class="col-scroll">
+            <div class="dpane is-active" id="pane-summary"></div>
+            <div class="dpane" id="pane-glossary"></div>
+            <div class="dpane" id="pane-dropped"></div>
+            <div class="dpane" id="pane-confidence"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= EVIDENCE ================= -->
+    <section class="view" id="v-evidence" tabindex="-1">
+      <div class="wrap">
+
+        <div class="view-head">
+          <div>
+            <span class="kicker">Evidence · §12 – §14, §18</span>
+            <h2>How you check the claims<br>instead of believing them.</h2>
+            <p class="explain">Nothing on this screen is a screenshot. The buttons make real
+            network calls and the tests run real assertions against the same code the app uses.</p>
+          </div>
+        </div>
+
+        <div class="grid" style="gap:var(--s5)">
+
+          <!-- offline seal -->
+          <div class="panel reveal">
+            <div class="panel-head">
+              <span class="kicker">Offline seal · try to break it</span>
+              <span class="pill ok" id="seal-pill">0 escaped</span>
+            </div>
+            <div class="panel-body">
+              <div class="ev-grid" style="align-items:start">
+                <div class="stack">
+                  <p class="muted" style="font-size:var(--t-sm);line-height:1.7">
+                    <code class="tok">fetch</code> <code class="tok">XMLHttpRequest</code>
+                    <code class="tok">WebSocket</code> <code class="tok">EventSource</code>
+                    <code class="tok">sendBeacon</code>
+                    are replaced at boot with traps that refuse the call and write it to an
+                    append-only log. Fire one yourself — these buttons make real calls.
+                  </p>
+                  <div class="row">
+                    <button class="btn btn-sm" data-probe="fetch" type="button">Attempt fetch</button>
+                    <button class="btn btn-sm" data-probe="xhr" type="button">Attempt XHR</button>
+                    <button class="btn btn-sm" data-probe="websocket" type="button">Attempt WebSocket</button>
+                    <button class="btn btn-sm" data-probe="beacon" type="button">Attempt beacon</button>
+                  </div>
+                  <div class="counters">
+                    <div>
+                      <div class="bignum" id="ev-blocked">0</div>
+                      <span class="kicker">Calls refused</span>
+                    </div>
+                    <div>
+                      <div class="bignum" id="ev-escaped" style="color:var(--ok)">0</div>
+                      <span class="kicker">Calls escaped</span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <span class="kicker" style="display:block;margin-bottom:8px">Violation log</span>
+                  <div class="netlog" id="netlog"><div class="faint">No attempts yet.</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- robustness -->
+          <div class="panel reveal">
+            <div class="panel-head">
+              <span class="kicker">Robustness suite · spec §13</span>
+              <button class="btn btn-sm" id="btn-suite" type="button">Run all 10</button>
+            </div>
+            <div id="suite"></div>
+          </div>
+
+          <div class="ev-grid">
+            <!-- WER -->
+            <div class="panel reveal">
+              <div class="panel-head">
+                <span class="kicker">Word error rate · held-out set</span>
+                <span class="pill caution">1 of 4 over threshold</span>
+              </div>
+              <div class="panel-body stack" id="wer"></div>
+            </div>
+
+            <!-- reliability -->
+            <div class="panel reveal">
+              <div class="panel-head">
+                <span class="kicker">Full-length runs · reference device</span>
+                <span class="pill ok">3 / 3 clean</span>
+              </div>
+              <div class="panel-body stack" id="rel"></div>
+            </div>
+          </div>
+
+          <!-- ablations -->
+          <div class="panel reveal">
+            <div class="panel-head">
+              <span class="kicker">Ablations · what each decision actually bought</span>
+            </div>
+            <div class="panel-body"><div class="abl" id="abl"></div></div>
+          </div>
+
+          <!-- gates -->
+          <div class="panel reveal">
+            <div class="panel-head">
+              <span class="kicker">Acceptance gates · spec §18</span>
+              <span class="pill caution">7 pass · 1 partial</span>
+            </div>
+            <div id="gates"></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TRACE ================= -->
+    <section class="view" id="v-trace" tabindex="-1">
+      <div class="wrap">
+
+        <div class="view-head">
+          <div>
+            <span class="kicker">Trace · spec §19, §21</span>
+            <h2>“How do you know this transcript<br>is actually correct?”</h2>
+            <p class="lede" style="margin-top:14px">
+              The answer is not a confidence number. It is a chain — and every link below is
+              something you can open and check for this specific session.
+            </p>
+          </div>
+          <div class="row">
+            <button class="btn" id="btn-md" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="m6 11 6 6 6-6"/><path d="M4 21h16"/></svg>
+              Export Markdown
+            </button>
+            <button class="btn" id="btn-json" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="m6 11 6 6 6-6"/><path d="M4 21h16"/></svg>
+              Export JSON
+            </button>
+          </div>
+        </div>
+
+        <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s6);align-items:start" id="trace-grid">
+          <div class="chain reveal" id="chain"></div>
+          <div class="stack" style="gap:var(--s4)">
+            <div>
+              <div class="spread" style="margin-bottom:9px">
+                <span class="kicker">Output contract · §6</span>
+                <span class="faint" style="font-size:var(--t-xs)" id="contract-size">—</span>
+              </div>
+              <pre class="code" id="contract" style="max-height:420px;overflow:auto">Run a session to produce the contract.</pre>
+            </div>
+            <div>
+              <span class="kicker" style="display:block;margin-bottom:9px">Controller journal · replayed on recovery</span>
+              <div class="netlog" id="journal" style="max-height:230px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="assets/js/core.js"></script>
+<script src="assets/js/corpus.js"></script>
+<script src="assets/js/pipeline.js"></script>
+<script src="assets/js/audio.js"></script>
+<script src="assets/js/preflight.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/views.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

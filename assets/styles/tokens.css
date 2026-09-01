@@ -1,0 +1,101 @@
+/* ============================================================
+   SHRUTI — design tokens
+   Warm monochrome, editorial. Colour is a scarce resource:
+   it appears only where it carries meaning.
+   ============================================================ */
+
+:root {
+  color-scheme: light;
+
+  /* --- canvas & surfaces -------------------------------------- */
+  --canvas:     #F7F6F3;   /* warm bone */
+  --canvas-2:   #FBFBFA;
+  --surface:    #FFFFFF;
+  --surface-2:  #FBFBFA;
+  --surface-3:  #F2F1ED;
+
+  /* --- structure ---------------------------------------------- */
+  --line:       #E7E6E1;
+  --line-2:     #DBD9D2;
+  --line-3:     #C9C6BE;
+
+  /* --- ink ----------------------------------------------------- */
+  --ink:        #1A1A18;   /* warm off-black, never #000 */
+  --ink-2:      #55534E;
+  --ink-3:      #85837C;
+  --ink-4:      #A8A59C;
+  --ink-ghost:  #C6C3BA;
+
+  /* --- semantic pastels ---------------------------------------
+     Each pair is a wash plus the only text colour legible on it. */
+  --ok-bg:      #EDF3EC;   --ok:      #346538;   --ok-line:      #CFE0CE;
+  --caution-bg: #FBF3DB;   --caution: #8A5C00;   --caution-line: #EDDFB4;
+  --fault-bg:   #FDEBEC;   --fault:   #9F2F2D;   --fault-line:   #F2D3D4;
+  --cite-bg:    #E9F2FA;   --cite:    #1F6C9F;   --cite-line:    #CFE2F0;
+
+  /* the recording signal — the one warm accent, used nowhere else */
+  --live:       #B4453C;
+  --live-bg:    #FBEDEB;
+  --live-line:  #EFD5D1;
+
+  /* --- typography ---------------------------------------------
+     Three faces, three trust tiers:
+       serif   = verbatim transcript and editorial headings
+       mono    = machine-generated data (ids, times, scores)
+       sans    = interface chrome                              */
+  --face-ui: "SF Pro Display", "Geist Sans", "Segoe UI Variable Display",
+             "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --face-data: "Geist Mono", "SF Mono", "JetBrains Mono", "Cascadia Mono",
+             ui-monospace, Consolas, "Liberation Mono", monospace;
+  --face-editorial: "Instrument Serif", "Newsreader", "Lyon Text",
+             "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+
+  /* type scale */
+  --t-xs:   12px;
+  --t-sm:   13.5px;
+  --t-base: 15.5px;
+  --t-md:   18px;
+  --t-lg:   24px;
+  --t-xl:   32px;
+  --t-2xl:  42px;
+  --t-3xl:  58px;
+
+  /* --- space (4px base) ---------------------------------------- */
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
+  --s5: 24px; --s6: 32px; --s7: 48px; --s8: 72px;
+
+  /* --- geometry ------------------------------------------------ */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 10px;
+  --r-pill: 9999px;
+
+  --rail-w: 118px;
+  --bar-h: 58px;
+
+  --lift: 0 1px 2px rgba(26,26,24,.03);
+  --lift-hover: 0 2px 8px rgba(26,26,24,.045);
+
+  --ease: cubic-bezier(.2, .7, .3, 1);
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+}
+
+/* Engineering hatch — encodes "not verified". Kept because it is the
+   one place where a texture says something a colour alone cannot. */
+:root {
+  --hatch-caution: repeating-linear-gradient(
+      -45deg, transparent 0 4px, rgba(149,100,0,.10) 4px 5px);
+  --hatch-fault: repeating-linear-gradient(
+      -45deg, transparent 0 4px, rgba(159,47,45,.11) 4px 5px);
+  --hatch-ghost: repeating-linear-gradient(
+      -45deg, transparent 0 6px, rgba(26,26,24,.035) 6px 7px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
